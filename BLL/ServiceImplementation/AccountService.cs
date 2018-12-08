@@ -1,0 +1,237 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using BLL.Interface.Entities.Accounts;
+using BLL.Interface.Interfaces;
+using BLL.Interface.Entities.Owners;
+using BLL.Factories;
+using BLL.Mappers;
+using DAL.Interface.Interfaces;
+
+
+namespace BLL.ServiceImplementation
+{
+    public class AccountService : IAccountService
+    {
+        private IOwnerService ownerService;
+        private INumberGenerator<string> numberGenerator;
+        private IAccountRepository accountRepository;
+        //TODO вынести вообще в другой класс инициализацию коллекции фабрик
+        private static IEnumerable<AccountFactory> factories;
+
+        public static IEnumerable<AccountFactory> AllowedFactories { get => factories; }
+
+        //TODO вынести INumberGenerator із конструктора 
+        public AccountService(IAccountRepository accountRepository, IOwnerService ownerService, INumberGenerator<string> numberGenerator)
+        {
+            this.accountRepository = accountRepository;
+            this.ownerService = ownerService;
+            this.numberGenerator = numberGenerator;
+        }
+
+        static AccountService()
+        {
+            InitializeFactory();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="creator"></param>
+        /// <param name="passportNumber"></param>
+        /// <param name="initialBalance"></param>
+        /// <returns></returns>
+        public string CreateAccount(AccountType accountType, string passportNumber, decimal initialBalance = 0)
+        {
+            // CheckInputData(accountCreator, passportNumber, initialBalance);
+
+            //TODO Если такого пользователя не существует
+            Owner owner = ownerService.FindByPassport(passportNumber);
+            //TODO если такой фабрики нет
+            AccountFactory accountCreator = factories.FirstOrDefault(f => f.AccountType == accountType);
+
+            return CreateAccount(accountCreator, owner, initialBalance);
+        }
+
+        public string CreateAccount(AccountType accountType, string passportNumber, string firstName, string lastName, string email, decimal initialBalance = 0M)
+        {
+            //TODO
+            //CheckInputData()
+
+            Owner owner = ownerService.CreateOwner(passportNumber, firstName, lastName, email);
+
+            AccountFactory accountCreator = factories.FirstOrDefault(f => f.AccountType == accountType);
+
+            return CreateAccount(accountCreator, owner, initialBalance);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="numberAccount"></param>
+        /// <param name="passportNumber"></param>
+        public void CloseAccount(string accountNumber)
+        {
+            //CheckInputData(numberAccount); 
+
+            Account account = accountRepository.GetByNumber(accountNumber)?.ToAccount();
+
+            account = account ?? throw new ArgumentException($"Account with number {accountNumber} does not exist.");
+
+            //TODO TRY - CATCH
+            account.CloseAccount();
+        }
+
+        public void PutMoney(string accountNumber, decimal amount)
+        {
+            Account account = GetAccountForOperation(accountNumber);
+
+            ExecuteAccountOperation(amount, account.Deposit);
+        }
+
+        public void TakeMoney(string accountNumber, decimal amount)
+        {
+            Account account = GetAccountForOperation(accountNumber);
+
+            ExecuteAccountOperation(amount, account.Withdraw);
+        }
+
+        public void TransferMoney(string fromAccountNumber, string toAccountNumber, decimal amount)
+        {
+            TakeMoney(fromAccountNumber, amount);
+
+            PutMoney(toAccountNumber, amount);
+        }
+
+        public IEnumerable<Account> GetAllAccounts()
+        {
+           return accountRepository.GetAll().ForEeach(dto => dto.ToAccount());
+        }
+
+        public void ShowAccountInfo(string accountNumber)
+        {
+
+        }
+
+        public void ShowAllOwnerAccount(string passportNumber)
+        {
+
+        }
+
+        private void ExecuteAccountOperation(decimal amount, Action<decimal> operation)
+        {
+            operation(amount);
+        }
+
+        private Account GetAccountForOperation(string accountNumber)
+        {
+            Account account = accountRepository.GetByNumber(accountNumber)?.ToAccount();
+
+            //TODO где это проверять. здесь или в аккаунте.
+            if (!account.IsOponed)
+            {
+                throw new InvalidOperationException();
+            }
+
+            return account;
+        }
+
+        private string CreateAccount(AccountFactory accountCreator, Owner owner, decimal initialBalance)
+        {
+            Account account = CreateAccountCore(accountCreator, owner, initialBalance);
+
+            account.Operation += CommitOperation;
+
+            return account.Number;
+        }
+
+        private Account CreateAccountCore(AccountFactory accountCreator, Owner owner, decimal initialBalance)
+        {
+            string accountNumber = ReciveAccountNumber();
+
+            Account account = accountCreator.CreateAccount(accountNumber, owner, initialBalance);
+
+            accountRepository.Add(account.ToAccauntDTO());
+
+            ownerService.OpenNewAccount(owner, account);
+
+            return account;
+        }
+
+        //TODO
+        private void CommitOperation(object sender, AccauntEventArgs e)
+        {
+
+        }
+
+        private string ReciveAccountNumber()
+        {
+            string accountNumber = numberGenerator.GenerateNumber();
+
+            while (!IsExistsAccountNumber(accountNumber))
+            {
+                accountNumber = numberGenerator.GenerateNumber();
+            }
+
+            return accountNumber;
+        }
+
+        private bool IsExistsAccountNumber(string accountNumber)
+        {
+            Account account = accountRepository.GetByNumber(accountNumber).ToAccount();
+
+            return ReferenceEquals(account, null);
+        }
+
+        private static void InitializeFactory()
+        {
+            //TODO or make dictionary with key enum 
+            factories = new List<AccountFactory>() { new BaseAccountFactory(), new SilverAccountFactory(), new GoldenAccountFactory(), new PlatinumAccountFactory() };
+
+        }
+
+        private void CheckInputData(AccountFactory creator, string passportNumber, decimal initialBalance)
+        {
+            CheckPassportNumber(passportNumber);
+
+            if (ReferenceEquals(creator, null))
+            {
+                throw new ArgumentNullException($"The {nameof(creator)} can not be null.");
+            }
+
+            if (initialBalance < 0)
+            {
+                throw new ArithmeticException($"The {nameof(initialBalance)} can not be less zero.");
+            }
+        }
+
+        private void CheckInputData(int numberAccount, string passportNumber)
+        {
+            if (numberAccount <= 0)
+            {
+                throw new ArgumentException($"The {nameof(numberAccount)} can not be less zero.");
+            }
+
+            CheckPassportNumber(passportNumber);
+        }
+
+        private void CheckPassportNumber(string passportNumber)
+        {
+            if (ReferenceEquals(passportNumber, null))
+            {
+                throw new ArgumentNullException($"The {nameof(passportNumber)} can not be null.");
+            }
+
+            if (passportNumber.Length == 0)
+            {
+                throw new ArithmeticException($"The {nameof(passportNumber)} can not be empty.");
+            }
+        }
+
+
+
+
+    }
+}

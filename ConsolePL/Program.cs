@@ -9,45 +9,59 @@ namespace ConsolePL
 {
     class Program
     {
-        private static readonly IKernel resolver;
-
-        static Program()
-        {
-            resolver = new StandardKernel();
-            resolver.ConfigurateResolver();
-        }
-
         static void Main(string[] args)
         {
-            IAccountService service = resolver.Get<IAccountService>();
-            IAccountNumberCreateService creator = resolver.Get<IAccountNumberCreateService>();
+            IKernel resolver = new StandardKernel();
+            resolver.ConfigurateResolver();
 
-            service.OpenAccount("Account owner 1", AccountType.Base, creator);
-            service.OpenAccount("Account owner 2", AccountType.Base, creator);
-            service.OpenAccount("Account owner 3", AccountType.Silver, creator);
-            service.OpenAccount("Account owner 4", AccountType.Base, creator);
+            INumberGenerator<string> numberGenerator = resolver.Get<INumberGenerator<string>>();
 
-            var creditNumbers = service.GetAllAccounts().Select(acc => acc.AccountNumber).ToArray();
+           // IOwnerService ownerService = resolver.Get<IOwnerService>();
+            IAccountService accountService = resolver.Get<IAccountService>();
 
-            foreach (var t in creditNumbers)
-            {
-                service.DepositAccount(t, 100);
-            }
+            string accontNumber = accountService.CreateAccount(BLL.Interface.Entities.Accounts.AccountType.BASE, "KB150150150", "Owner1", "Owner1", "email", 15);
 
-            foreach (var item in service.GetAllAccounts())
-            {
-                Console.WriteLine(item);
-            }
-
-            foreach (var t in creditNumbers)
-            {
-                service.WithdrawAccount(t, 10);
-            }
-
-            foreach (var item in service.GetAllAccounts())
-            {
-                Console.WriteLine(item);
-            }
+            
         }
+        //private static readonly IKernel resolver;
+
+        //static Program()
+        //{
+        //    resolver = new StandardKernel();
+        //    resolver.ConfigurateResolver();
+        //}
+
+        //static void Main(string[] args)
+        //{
+        //    IAccountService service = resolver.Get<IAccountService>();
+        //    IAccountNumberCreateService creator = resolver.Get<IAccountNumberCreateService>();
+
+        //    service.OpenAccount("Account owner 1", AccountType.Base, creator);
+        //    service.OpenAccount("Account owner 2", AccountType.Base, creator);
+        //    service.OpenAccount("Account owner 3", AccountType.Silver, creator);
+        //    service.OpenAccount("Account owner 4", AccountType.Base, creator);
+
+        //    var creditNumbers = service.GetAllAccounts().Select(acc => acc.AccountNumber).ToArray();
+
+        //    foreach (var t in creditNumbers)
+        //    {
+        //        service.DepositAccount(t, 100);
+        //    }
+
+        //    foreach (var item in service.GetAllAccounts())
+        //    {
+        //        Console.WriteLine(item);
+        //    }
+
+        //    foreach (var t in creditNumbers)
+        //    {
+        //        service.WithdrawAccount(t, 10);
+        //    }
+
+        //    foreach (var item in service.GetAllAccounts())
+        //    {
+        //        Console.WriteLine(item);
+        //    }
+        //}
     }
 }
