@@ -11,11 +11,11 @@ namespace BLL.Interface.Entities.Owners
     {
         //TODO добавить валидацию
         private List<Account> accounts;
+
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PassportNumber { get; set; }
         public string Email { get; set; }
-
         public IEnumerable<Account> Accounts { get => accounts; }
 
         public Owner(string passportNumber, string firstName, string lastName, string email)

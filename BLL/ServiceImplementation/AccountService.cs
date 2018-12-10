@@ -18,10 +18,6 @@ namespace BLL.ServiceImplementation
         private IOwnerService ownerService;
         private INumberGenerator<string> numberGenerator;
         private IAccountRepository accountRepository;
-        //TODO вынести вообще в другой класс инициализацию коллекции фабрик
-        private static IEnumerable<AccountFactory> factories;
-
-        public static IEnumerable<AccountFactory> AllowedFactories { get => factories; }
 
         //TODO вынести INumberGenerator із конструктора 
         public AccountService(IAccountRepository accountRepository, IOwnerService ownerService, INumberGenerator<string> numberGenerator)
@@ -31,47 +27,51 @@ namespace BLL.ServiceImplementation
             this.numberGenerator = numberGenerator;
         }
 
-        static AccountService()
+        //TODO Ask? но тогда на уровне представления мы можем напрямую дtргать методы Account. Они ведь паблик.
+        public IEnumerable<Account> GetAllAccounts()
         {
-            InitializeFactory();
+            return accountRepository.GetAll().Select(dto => dto.ToAccount());//.ForEeach(dto => dto.ToAccount()); - мое расширение - удалить
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="creator"></param>
-        /// <param name="passportNumber"></param>
-        /// <param name="initialBalance"></param>
-        /// <returns></returns>
-        public string CreateAccount(AccountType accountType, string passportNumber, decimal initialBalance = 0)
+        public Account GetAccount(string accountNumber)
+        {
+            return accountRepository.GetByNumber(accountNumber).ToAccount();
+        }
+
+        public IEnumerable<Owner> GetAllOwners()
+        {
+            return ownerService.Owners;
+        }
+        
+        public Owner GetOwner(string passportNumber)
+        {
+            return ownerService.FindByPassport(passportNumber);
+        }
+
+        public string OpenAccount(AccountType accountType, string passportNumber, decimal initialBalance = 0)
         {
             // CheckInputData(accountCreator, passportNumber, initialBalance);
 
             //TODO Если такого пользователя не существует
             Owner owner = ownerService.FindByPassport(passportNumber);
             //TODO если такой фабрики нет
-            AccountFactory accountCreator = factories.FirstOrDefault(f => f.AccountType == accountType);
+            AccountFactory accountCreator = FactoryCollection.Factories.FirstOrDefault(f => f.AccountType == accountType);
 
             return CreateAccount(accountCreator, owner, initialBalance);
         }
 
-        public string CreateAccount(AccountType accountType, string passportNumber, string firstName, string lastName, string email, decimal initialBalance = 0M)
+        public string OpenAccount(AccountType accountType, string passportNumber, string firstName, string lastName, string email, decimal initialBalance = 0M)
         {
             //TODO
             //CheckInputData()
 
             Owner owner = ownerService.CreateOwner(passportNumber, firstName, lastName, email);
 
-            AccountFactory accountCreator = factories.FirstOrDefault(f => f.AccountType == accountType);
+            AccountFactory accountCreator = FactoryCollection.Factories.FirstOrDefault(f => f.AccountType == accountType);
 
             return CreateAccount(accountCreator, owner, initialBalance);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="numberAccount"></param>
-        /// <param name="passportNumber"></param>
         public void CloseAccount(string accountNumber)
         {
             //CheckInputData(numberAccount); 
@@ -84,40 +84,26 @@ namespace BLL.ServiceImplementation
             account.CloseAccount();
         }
 
-        public void PutMoney(string accountNumber, decimal amount)
+        public void Deposit(string accountNumber, decimal amount)
         {
             Account account = GetAccountForOperation(accountNumber);
 
             ExecuteAccountOperation(amount, account.Deposit);
         }
 
-        public void TakeMoney(string accountNumber, decimal amount)
+        public void Withdraw(string accountNumber, decimal amount)
         {
             Account account = GetAccountForOperation(accountNumber);
 
             ExecuteAccountOperation(amount, account.Withdraw);
         }
 
-        public void TransferMoney(string fromAccountNumber, string toAccountNumber, decimal amount)
+        public void Transfer(string fromAccountNumber, string toAccountNumber, decimal amount)
         {
-            TakeMoney(fromAccountNumber, amount);
+            //Две операции нераздельно нужно выполнить
+            Withdraw(fromAccountNumber, amount);
 
-            PutMoney(toAccountNumber, amount);
-        }
-
-        public IEnumerable<Account> GetAllAccounts()
-        {
-           return accountRepository.GetAll().ForEeach(dto => dto.ToAccount());
-        }
-
-        public void ShowAccountInfo(string accountNumber)
-        {
-
-        }
-
-        public void ShowAllOwnerAccount(string passportNumber)
-        {
-
+            Deposit(toAccountNumber, amount);
         }
 
         private void ExecuteAccountOperation(decimal amount, Action<decimal> operation)
@@ -129,7 +115,6 @@ namespace BLL.ServiceImplementation
         {
             Account account = accountRepository.GetByNumber(accountNumber)?.ToAccount();
 
-            //TODO где это проверять. здесь или в аккаунте.
             if (!account.IsOponed)
             {
                 throw new InvalidOperationException();
@@ -151,11 +136,11 @@ namespace BLL.ServiceImplementation
         {
             string accountNumber = ReciveAccountNumber();
 
-            Account account = accountCreator.CreateAccount(accountNumber, owner, initialBalance);
-
-            accountRepository.Add(account.ToAccauntDTO());
+            Account account = accountCreator.CreateAccount(accountNumber, owner, initialBalance);            
 
             ownerService.OpenNewAccount(owner, account);
+
+            accountRepository.Add(account.ToAccauntDTO());
 
             return account;
         }
@@ -163,7 +148,7 @@ namespace BLL.ServiceImplementation
         //TODO
         private void CommitOperation(object sender, AccauntEventArgs e)
         {
-
+            //Logger
         }
 
         private string ReciveAccountNumber()
@@ -180,16 +165,9 @@ namespace BLL.ServiceImplementation
 
         private bool IsExistsAccountNumber(string accountNumber)
         {
-            Account account = accountRepository.GetByNumber(accountNumber).ToAccount();
+            Account account = accountRepository.GetByNumber(accountNumber)?.ToAccount();
 
             return ReferenceEquals(account, null);
-        }
-
-        private static void InitializeFactory()
-        {
-            //TODO or make dictionary with key enum 
-            factories = new List<AccountFactory>() { new BaseAccountFactory(), new SilverAccountFactory(), new GoldenAccountFactory(), new PlatinumAccountFactory() };
-
         }
 
         private void CheckInputData(AccountFactory creator, string passportNumber, decimal initialBalance)

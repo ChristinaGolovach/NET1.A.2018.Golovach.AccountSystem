@@ -12,7 +12,9 @@ namespace BLL.Mappers
     {
         public static AccountDTO ToAccauntDTO(this Account account)
         {
-            return new AccountDTO()
+           OwnerDTO ownerDTO = account.Owner.ToOwnerDTO();
+            
+           AccountDTO accountDTO = new AccountDTO()
             {
                 Number = account.Number,
                 IdAccountType = (int)account.AccountType,
@@ -20,13 +22,19 @@ namespace BLL.Mappers
                 BonusPoints = account.BonusPoints,
                 IsOponed = account.IsOponed,
                 //TODO Owner or IDOwner
-                Owner = account.Owner.ToOwnerDTO()
-            };
+                Owner = ownerDTO
+           };
+
+            //TODO ASK почему не добавляется!!!!!!!!!!!!!!!!!!!!!!!!
+           // ownerDTO.Accounts.ToList<AccountDTO>().Add(accountDTO);
+           // accountDTO.Owner.Accounts.ToList<AccountDTO>().Add(accountDTO);
+
+           return accountDTO;
         }
 
         public static Account ToAccount(this AccountDTO accountDTO)
         {
-            AccountFactory factory = AccountService.AllowedFactories.FirstOrDefault(f => (int)f.AccountType == accountDTO.IdAccountType);
+            AccountFactory factory = FactoryCollection.Factories.FirstOrDefault(f => (int)f.AccountType == accountDTO.IdAccountType);
 
             Account account = factory.CreateAccount(accountDTO.Number, accountDTO.Owner.ToOwner(), accountDTO.Balance);
             account.BonusPoints = accountDTO.BonusPoints;
@@ -35,7 +43,7 @@ namespace BLL.Mappers
             return account;
         }
 
-        //TODO in another class move
+        //TODO in another class move (instead use select)
         public static IEnumerable<TOutput> ForEeach<TOutput, TInput>(this IEnumerable<TInput> accounts, Func<TInput, TOutput> transform)
         {
             foreach (var item in accounts)

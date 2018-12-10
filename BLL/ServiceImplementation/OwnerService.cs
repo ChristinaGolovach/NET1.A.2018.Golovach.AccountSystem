@@ -49,8 +49,7 @@ namespace BLL.ServiceImplementation
         }
 
         public void OpenNewAccount(Owner owner, Account account)
-        {
-            // TODO ASK это можно напрямую так, ілі создать в репозіторіі перегруженную версію Update, и уже в методе обновления вызывать OpenAccount
+        {            
             owner.OpenAccount(account);
         }
 

@@ -8,9 +8,9 @@ namespace BLL.Interface.Entities.Accounts
 {
     public enum AccountType
     {
-        BASE = 0,
-        SILVER = 1,
-        GOLDEN = 2,
-        PLATINUM = 3
+        BASE = 1,
+        SILVER = 2,
+        GOLDEN = 3,
+        PLATINUM = 4
     }
 }

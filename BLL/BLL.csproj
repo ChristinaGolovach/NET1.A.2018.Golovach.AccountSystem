@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Factories\AccountFactory.cs" />
     <Compile Include="Factories\BaseAccountFactory.cs" />
+    <Compile Include="Factories\FactoryCollection.cs" />
     <Compile Include="Factories\GoldenAccountFactory.cs" />
     <Compile Include="Factories\PlatinumAccountFactory.cs" />
     <Compile Include="Factories\SilverAccountFactory.cs" />

@@ -15,12 +15,12 @@ namespace BLL.Interface.Entities.Accounts
 
         protected override int CalculateBonusPoints(decimal money)
         {
-            return AccountUtils.CalculateBonusPoints(BALANSECOST, Balance, AMAUNTCOST, money);
+            return this.CalculateBonusPoints(BALANSECOST, Balance, AMAUNTCOST, money);
         }
 
         protected override bool IsAllowedToWithdraw(decimal money)
         {
-            return AccountUtils.IsAllowedToWithdraw(ALLOWEDBALANCEMINUS, Balance, money);
+            return this.IsAllowedToWithdraw(ALLOWEDBALANCEMINUS, Balance, money);
         }
     }
 }

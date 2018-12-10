@@ -4,6 +4,8 @@ using BLL.Interface.Entities;
 using BLL.Interface.Interfaces;
 using DependencyResolver;
 using Ninject;
+using BLL.Interface.Entities.Accounts;
+using BLL.Interface.Entities.Owners;
 
 namespace ConsolePL
 {
@@ -16,11 +18,17 @@ namespace ConsolePL
 
             INumberGenerator<string> numberGenerator = resolver.Get<INumberGenerator<string>>();
 
-           // IOwnerService ownerService = resolver.Get<IOwnerService>();
-            IAccountService accountService = resolver.Get<IAccountService>();
+             IAccountService accountService = resolver.Get<IAccountService>();
 
-            string accontNumber = accountService.CreateAccount(BLL.Interface.Entities.Accounts.AccountType.BASE, "KB150150150", "Owner1", "Owner1", "email", 15);
+            string accontNumber = accountService.OpenAccount(AccountType.BASE, "KB150150150", "Owner1", "Owner1", "email", 15);
 
+            accountService.Deposit(accontNumber, 17);
+            Owner owner =  accountService.GetOwner("KB150150150");
+
+            decimal currentBalance =  owner.Accounts.FirstOrDefault(a => a.Number == accontNumber).Balance; // 32
+            Console.WriteLine(currentBalance);
+
+            Console.ReadKey();
             
         }
         //private static readonly IKernel resolver;

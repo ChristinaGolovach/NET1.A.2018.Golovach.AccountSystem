@@ -8,6 +8,7 @@ using BLL.Interface.Entities.Owners;
 
 namespace BLL.Interface.Interfaces
 {
+    //TODO Internal and friendly for BLL
     public interface IOwnerService
     {
         IEnumerable<Owner> Owners { get; }

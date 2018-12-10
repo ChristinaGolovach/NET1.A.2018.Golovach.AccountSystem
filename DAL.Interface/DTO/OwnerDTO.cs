@@ -14,5 +14,10 @@ namespace DAL.Interface.DTO
         public string PassportNumber { get; set; }
         public string Email { get; set; }
         public IEnumerable<AccountDTO> Accounts { get; set; }
+
+        public OwnerDTO()
+        {
+            Accounts = new List<AccountDTO>();
+        }
     }
 }

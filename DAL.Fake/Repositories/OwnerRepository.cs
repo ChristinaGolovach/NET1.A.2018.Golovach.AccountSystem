@@ -27,16 +27,6 @@ namespace DAL.Fake.Repositories
             owners.Add(owner);
         }
 
-        public void Delete(OwnerDTO owner)
-        {
-            if (ReferenceEquals(owner, null))
-            {
-                throw new ArgumentNullException($"The {nameof(owner)} can not be null.");
-            }
-
-            owners.Remove(owner);
-        }
-
         public void Update(OwnerDTO owner)
         {
             if (ReferenceEquals(owner, null))

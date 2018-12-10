@@ -22,11 +22,6 @@ namespace DAL.Fake.Repositories
             accounts.Add(account);
         }
 
-        //public void Delete(Account account)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
         public void Update(AccountDTO account)
         {
             throw new NotImplementedException();
