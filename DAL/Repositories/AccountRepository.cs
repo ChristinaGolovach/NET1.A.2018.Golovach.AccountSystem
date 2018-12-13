@@ -7,6 +7,7 @@ using System.Data.Entity;
 using DAL.Interface.DTO;
 using DAL.Interface.Interfaces;
 using ORMDBFirst;
+using System.Linq.Expressions;
 
 namespace DAL.Repositories
 {
@@ -34,7 +35,17 @@ namespace DAL.Repositories
             throw new NotImplementedException();
         }
 
+        public AccountDTO GetByPredicate(Expression<Func<AccountDTO, bool>> f)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Update(AccountDTO account)
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerable<AccountDTO> IRepository<AccountDTO>.GetByPredicate(Expression<Func<AccountDTO, bool>> predicate)
         {
             throw new NotImplementedException();
         }

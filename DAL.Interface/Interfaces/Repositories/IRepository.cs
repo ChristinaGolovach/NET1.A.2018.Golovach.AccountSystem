@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace DAL.Interface.Interfaces
 {
-    public interface IRepository<T>
+    public interface IRepository<TEntity>
     {
-        IEnumerable<T> GetAll();
+        IEnumerable<TEntity> GetAll();
+        IEnumerable<TEntity> GetByPredicate(Expression<Func<TEntity, bool>> predicate);
         //T GetById(int id);
-        void Add(T t);
-        void Update(T t);        
+        void Add(TEntity t);
+        void Update(TEntity t);        
     }
 }

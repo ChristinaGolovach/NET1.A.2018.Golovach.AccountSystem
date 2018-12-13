@@ -21,13 +21,8 @@ namespace BLL.Mappers
                 Balance = account.Balance,
                 BonusPoints = account.BonusPoints,
                 IsOponed = account.IsOponed,
-                //TODO Owner or IDOwner
                 Owner = ownerDTO
            };
-
-            //TODO ASK почему не добавляется!!!!!!!!!!!!!!!!!!!!!!!!
-           // ownerDTO.Accounts.ToList<AccountDTO>().Add(accountDTO);
-           // accountDTO.Owner.Accounts.ToList<AccountDTO>().Add(accountDTO);
 
            return accountDTO;
         }

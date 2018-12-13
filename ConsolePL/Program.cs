@@ -6,6 +6,7 @@ using DependencyResolver;
 using Ninject;
 using BLL.Interface.Entities.Accounts;
 using BLL.Interface.Entities.Owners;
+using System.Collections.Generic;
 
 namespace ConsolePL
 {
@@ -17,20 +18,56 @@ namespace ConsolePL
             resolver.ConfigurateResolver();
 
             INumberGenerator<string> numberGenerator = resolver.Get<INumberGenerator<string>>();
+            IAccountService accountService = resolver.Get<IAccountService>();
 
-             IAccountService accountService = resolver.Get<IAccountService>();
-
+            #region Owner1
             string accontNumber = accountService.OpenAccount(AccountType.BASE, "KB150150150", "Owner1", "Owner1", "email", 15);
 
-            accountService.Deposit(accontNumber, 17);
+            accountService.Deposit(accontNumber, 17); // accontNumber - Balance - 32
+
             Owner owner =  accountService.GetOwner("KB150150150");
 
-            decimal currentBalance =  owner.Accounts.FirstOrDefault(a => a.Number == accontNumber).Balance; // 32
-            Console.WriteLine(currentBalance);
+            IEnumerable<Account> accounts = accountService.GetAllAccountsByOwnerPassport("KB150150150"); 
+
+            foreach (var account in accounts)
+            {
+                Console.WriteLine($"{owner.FirstName} - {account.Number} , Type - {account.AccountType} - Balance - {account.Balance}");
+            }
+
+            Console.WriteLine(Environment.NewLine);
+
+            string accontNumber2 = accountService.OpenAccount(AccountType.GOLDEN, "KB150150150", 11);
+
+            foreach (var account in accountService.GetAllAccountsByOwnerPassport("KB150150150"))
+            {
+                Console.WriteLine($"{owner.FirstName} - {account.Number} , Type - {account.AccountType} - Balance - {account.Balance}");
+            }
+
+            accountService.Transfer(accontNumber, accontNumber2, 32);
+            Account account1 = accountService.GetAccount(accontNumber);
+            Account account2 = accountService.GetAccount(accontNumber2);
+
+            Console.WriteLine($"{accontNumber} - Balance {account1.Balance}"); // 0
+            Console.WriteLine($"{accontNumber2} - Balance {account2.Balance}"); // 43
+            #endregion Owner1
+
+
+            #region Owner2
+
+            string accontNumber3 = accountService.OpenAccount(AccountType.BASE, "KB111111111", "Owner2", "Owner2", "email", 10000);
+
+            Console.WriteLine(Environment.NewLine);
+
+            foreach (var account in accountService.GetAllAccountsByOwnerPassport("KB111111111"))
+            {
+                Console.WriteLine($"{account.Owner.FirstName} - {account.Number} , Type - {account.AccountType} - Balance - {account.Balance}");
+            }
+            #endregion Owner2
 
             Console.ReadKey();
             
         }
+
         //private static readonly IKernel resolver;
 
         //static Program()

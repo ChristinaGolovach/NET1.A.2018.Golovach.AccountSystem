@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL.Interface.Interfaces;
 using DAL.Interface.DTO;
+using System.Linq.Expressions;
 
 namespace DAL.Fake.Repositories
 {
@@ -45,8 +46,7 @@ namespace DAL.Fake.Repositories
         {
             return owners;
         }
-
-        //TODO изменить сигнатуру метода, сделать чтобы можно было указывать как сравнивать номера паспорта
+        
         public OwnerDTO GetByPassportNumber(string passportNumber)
         {
             if (ReferenceEquals(passportNumber, null))
@@ -55,6 +55,11 @@ namespace DAL.Fake.Repositories
             }
 
             return owners.FirstOrDefault(x => x.PassportNumber.Equals(passportNumber, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public IEnumerable<OwnerDTO> GetByPredicate(Expression<Func<OwnerDTO, bool>> f)
+        {
+            throw new NotImplementedException();
         }
     }
 }

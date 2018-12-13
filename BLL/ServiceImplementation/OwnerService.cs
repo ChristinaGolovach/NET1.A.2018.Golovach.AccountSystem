@@ -48,10 +48,10 @@ namespace BLL.ServiceImplementation
             return owner;
         }
 
-        public void OpenNewAccount(Owner owner, Account account)
-        {            
-            owner.OpenAccount(account);
-        }
+        //public void OpenNewAccount(Owner owner, Account account)
+        //{            
+        //    owner.OpenAccount(account);
+        //}
 
         public Owner FindByPassport(string passportNumber)
         {

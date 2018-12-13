@@ -13,7 +13,7 @@ namespace BLL.Interface.Interfaces
     {
         IEnumerable<Owner> Owners { get; }
         Owner CreateOwner(string passportNumber, string firstName, string lastName, string email);
-        void OpenNewAccount(Owner owner, Account account);
+        //void OpenNewAccount(Owner owner, Account account);
         Owner FindByPassport(string passportNumber);
     }
 }

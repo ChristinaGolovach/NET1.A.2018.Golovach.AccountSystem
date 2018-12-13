@@ -10,8 +10,10 @@ namespace BLL.Interface.Interfaces
 {
     public interface IAccountService
     {
-        IEnumerable<Account> GetAllAccounts();        
+        IEnumerable<Account> GetAllAccounts();
+        IEnumerable<Account> GetAllAccountsByOwnerPassport(string passportNumber);
         Account GetAccount(string accountNumber);
+        
         //TODO By id
         //Account GetAccount(int id);
 

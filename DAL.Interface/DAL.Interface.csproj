@@ -42,9 +42,10 @@
   <ItemGroup>
     <Compile Include="DTO\AccountDTO.cs" />
     <Compile Include="DTO\OwnerDTO.cs" />
-    <Compile Include="Interfaces\IAccountRepository.cs" />
-    <Compile Include="Interfaces\IOwnerRepository.cs" />
-    <Compile Include="Interfaces\IRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IAccountRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IOwnerRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IRepository.cs" />
+    <Compile Include="Interfaces\IUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

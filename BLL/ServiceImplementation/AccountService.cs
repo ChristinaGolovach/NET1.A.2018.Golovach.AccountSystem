@@ -30,7 +30,13 @@ namespace BLL.ServiceImplementation
         //TODO Ask? но тогда на уровне представления мы можем напрямую дtргать методы Account. Они ведь паблик.
         public IEnumerable<Account> GetAllAccounts()
         {
-            return accountRepository.GetAll().Select(dto => dto.ToAccount());//.ForEeach(dto => dto.ToAccount()); - мое расширение - удалить
+            return accountRepository.GetAll().Select(dto => dto.ToAccount());
+        }
+
+        public IEnumerable<Account> GetAllAccountsByOwnerPassport(string passportNumber)
+        {
+            var accounts = accountRepository.GetByPredicate(a => a.Owner.PassportNumber == passportNumber);
+            return accounts.Select(dto => dto.ToAccount());
         }
 
         public Account GetAccount(string accountNumber)
@@ -89,6 +95,8 @@ namespace BLL.ServiceImplementation
             Account account = GetAccountForOperation(accountNumber);
 
             ExecuteAccountOperation(amount, account.Deposit);
+
+            accountRepository.Update(account.ToAccauntDTO());
         }
 
         public void Withdraw(string accountNumber, decimal amount)
@@ -96,6 +104,8 @@ namespace BLL.ServiceImplementation
             Account account = GetAccountForOperation(accountNumber);
 
             ExecuteAccountOperation(amount, account.Withdraw);
+
+            accountRepository.Update(account.ToAccauntDTO());
         }
 
         public void Transfer(string fromAccountNumber, string toAccountNumber, decimal amount)
@@ -138,7 +148,7 @@ namespace BLL.ServiceImplementation
 
             Account account = accountCreator.CreateAccount(accountNumber, owner, initialBalance);            
 
-            ownerService.OpenNewAccount(owner, account);
+           // ownerService.OpenNewAccount(owner, account);
 
             accountRepository.Add(account.ToAccauntDTO());
 
@@ -207,9 +217,5 @@ namespace BLL.ServiceImplementation
                 throw new ArithmeticException($"The {nameof(passportNumber)} can not be empty.");
             }
         }
-
-
-
-
     }
 }
