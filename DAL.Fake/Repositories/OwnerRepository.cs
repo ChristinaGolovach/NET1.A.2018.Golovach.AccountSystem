@@ -9,11 +9,11 @@ using System.Linq.Expressions;
 
 namespace DAL.Fake.Repositories
 {
-    public class OwnerRepository : IOwnerRepository
+    public class OwnerFakeRepository : IOwnerRepository
     {
         private List<OwnerDTO> owners;
 
-        public OwnerRepository()
+        public OwnerFakeRepository()
         {
             owners = new List<OwnerDTO>();
         }

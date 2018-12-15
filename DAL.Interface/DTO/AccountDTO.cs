@@ -9,7 +9,7 @@ namespace DAL.Interface.DTO
     public class AccountDTO
     {
         public int Id { get; set; }
-        public int IdAccountType { get; set; }
+        public int AccountTypeId { get; set; }
         public string Number { get; set; }
         public decimal Balance { get; set; }
         public int BonusPoints { get; set; }

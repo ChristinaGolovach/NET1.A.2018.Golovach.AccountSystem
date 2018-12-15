@@ -13,18 +13,11 @@ namespace BLL.ServiceImplementation
 {
     public class OwnerService : IOwnerService
     {
-        private IEnumerable<Owner> owners;
         private IOwnerRepository ownerRepository;
-
-        public IEnumerable<Owner> Owners
-        {
-            get => owners;
-        }
 
         public OwnerService(IOwnerRepository ownerRepository)
         {
             this.ownerRepository = ownerRepository;
-            owners = ownerRepository.GetAll().ForEeach(dto => dto.ToOwner());
         }
 
         public Owner CreateOwner(string passportNumber, string firstName, string lastName, string email)
@@ -52,6 +45,11 @@ namespace BLL.ServiceImplementation
         //{            
         //    owner.OpenAccount(account);
         //}
+
+        public IEnumerable<Owner> GetAllOwners()
+        {
+            return ownerRepository.GetAll().ForEeach(dto => dto.ToOwner());
+        }
 
         public Owner FindByPassport(string passportNumber)
         {

@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity;
+using System.Linq.Expressions;
 using DAL.Interface.DTO;
 using DAL.Interface.Interfaces;
+using DAL.Mappers;
 using ORMDBFirst;
-using System.Linq.Expressions;
 
 namespace DAL.Repositories
 {
@@ -22,20 +23,22 @@ namespace DAL.Repositories
 
         public void Add(AccountDTO account)
         {
-            throw new NotImplementedException();
+            dbContext.Set<Account>().Add(account.ToAccountORM());
         }
 
         public IEnumerable<AccountDTO> GetAll()
         {
-            throw new NotImplementedException();
+            return dbContext.Set<Account>().Include(account => account.AccountOwner).AsEnumerable().Select(a => a.ToAccountDTO());
         }
+
+        //TODO Find  - for key
 
         public AccountDTO GetByNumber(string number)
         {
-            throw new NotImplementedException();
+            return dbContext.Set<Account>().FirstOrDefault(account => account.Number == number)?.ToAccountDTO();
         }
 
-        public AccountDTO GetByPredicate(Expression<Func<AccountDTO, bool>> f)
+        public AccountDTO GetByPredicate(Expression<Func<AccountDTO, bool>> predicate)
         {
             throw new NotImplementedException();
         }

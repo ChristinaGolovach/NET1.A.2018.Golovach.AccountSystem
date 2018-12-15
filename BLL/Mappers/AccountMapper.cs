@@ -17,7 +17,7 @@ namespace BLL.Mappers
            AccountDTO accountDTO = new AccountDTO()
             {
                 Number = account.Number,
-                IdAccountType = (int)account.AccountType,
+                AccountTypeId = (int)account.AccountType,
                 Balance = account.Balance,
                 BonusPoints = account.BonusPoints,
                 IsOponed = account.IsOponed,
@@ -29,7 +29,7 @@ namespace BLL.Mappers
 
         public static Account ToAccount(this AccountDTO accountDTO)
         {
-            AccountFactory factory = FactoryCollection.Factories.FirstOrDefault(f => (int)f.AccountType == accountDTO.IdAccountType);
+            AccountFactory factory = FactoryCollection.Factories.FirstOrDefault(f => (int)f.AccountType == accountDTO.AccountTypeId);
 
             Account account = factory.CreateAccount(accountDTO.Number, accountDTO.Owner.ToOwner(), accountDTO.Balance);
             account.BonusPoints = accountDTO.BonusPoints;

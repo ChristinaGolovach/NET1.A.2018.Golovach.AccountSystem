@@ -9,11 +9,11 @@ using System.Linq.Expressions;
 
 namespace DAL.Fake.Repositories
 {
-    public class AccountRepository : IAccountRepository
+    public class AccountFakeRepository : IAccountRepository
     {
         private List<AccountDTO> accounts;
 
-        public AccountRepository()
+        public AccountFakeRepository()
         {
             accounts = new List<AccountDTO>();
         }
@@ -42,10 +42,11 @@ namespace DAL.Fake.Repositories
             return accounts.FirstOrDefault(x => x.Number == number);
         }
 
+        //TODO подумать - не все лямбды могут быть преобраз . в деревья. может ошибка возникнуть при выполнения этого метода
         public IEnumerable<AccountDTO> GetByPredicate(Expression<Func<AccountDTO, bool>> predicate)
         {
             var compiled = predicate.Compile();            
-            IEnumerable<AccountDTO> matchedAccounts = accounts.Where(compiled).ToList();
+            IEnumerable <AccountDTO> matchedAccounts = accounts.Where(compiled).ToList();
             return matchedAccounts;
         }
     }

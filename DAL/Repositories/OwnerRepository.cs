@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity;
+using System.Linq.Expressions;
 using DAL.Interface.DTO;
 using DAL.Interface.Interfaces;
 using ORMDBFirst;
-using System.Linq.Expressions;
+using DAL.Mappers;
 
 namespace DAL.Repositories
 {
@@ -27,25 +28,21 @@ namespace DAL.Repositories
 
         public IEnumerable<OwnerDTO> GetAll()
         {
-            throw new NotImplementedException();
+            return dbContext.Set<AccountOwner>().AsEnumerable().Select(a => a.ToOwnerDTO());
         }
 
+        //TODO Delete this method. due to the fact I have GetByPredicate
         public OwnerDTO GetByPassportNumber(string passportNumber)
         {
-            throw new NotImplementedException();
+            return dbContext.Set<AccountOwner>().FirstOrDefault(owner => owner.PassportNumber == passportNumber).ToOwnerDTO();
         }
 
-        public OwnerDTO GetByPredicate(Expression<Func<OwnerDTO, bool>> f)
+        public IEnumerable<OwnerDTO> GetByPredicate(Expression<Func<OwnerDTO, bool>> predicate)
         {
             throw new NotImplementedException();
         }
 
         public void Update(OwnerDTO owner)
-        {
-            throw new NotImplementedException();
-        }
-
-        IEnumerable<OwnerDTO> IRepository<OwnerDTO>.GetByPredicate(Expression<Func<OwnerDTO, bool>> predicate)
         {
             throw new NotImplementedException();
         }

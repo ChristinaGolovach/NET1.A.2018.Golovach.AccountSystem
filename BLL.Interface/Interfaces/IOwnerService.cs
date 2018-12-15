@@ -11,7 +11,7 @@ namespace BLL.Interface.Interfaces
     //TODO Internal and friendly for BLL
     public interface IOwnerService
     {
-        IEnumerable<Owner> Owners { get; }
+        IEnumerable<Owner> GetAllOwners();
         Owner CreateOwner(string passportNumber, string firstName, string lastName, string email);
         //void OpenNewAccount(Owner owner, Account account);
         Owner FindByPassport(string passportNumber);

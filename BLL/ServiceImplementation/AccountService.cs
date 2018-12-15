@@ -18,13 +18,15 @@ namespace BLL.ServiceImplementation
         private IOwnerService ownerService;
         private INumberGenerator<string> numberGenerator;
         private IAccountRepository accountRepository;
+        private IUnitOfWork unitOfWork;
 
         //TODO вынести INumberGenerator із конструктора 
-        public AccountService(IAccountRepository accountRepository, IOwnerService ownerService, INumberGenerator<string> numberGenerator)
+        public AccountService(IAccountRepository accountRepository, IOwnerService ownerService, IUnitOfWork unitOfWork, INumberGenerator<string> numberGenerator)
         {
             this.accountRepository = accountRepository;
             this.ownerService = ownerService;
             this.numberGenerator = numberGenerator;
+            this.unitOfWork = unitOfWork;
         }
 
         //TODO Ask? но тогда на уровне представления мы можем напрямую дtргать методы Account. Они ведь паблик.
@@ -46,7 +48,7 @@ namespace BLL.ServiceImplementation
 
         public IEnumerable<Owner> GetAllOwners()
         {
-            return ownerService.Owners;
+            return ownerService.GetAllOwners();
         }
         
         public Owner GetOwner(string passportNumber)
@@ -151,6 +153,8 @@ namespace BLL.ServiceImplementation
            // ownerService.OpenNewAccount(owner, account);
 
             accountRepository.Add(account.ToAccauntDTO());
+
+            unitOfWork.Commit();
 
             return account;
         }
