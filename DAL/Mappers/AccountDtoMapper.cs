@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DAL.Interface.DTO;
+﻿using DAL.Interface.DTO;
 using ORMDBFirst;
 
 namespace DAL.Mappers
@@ -29,13 +24,12 @@ namespace DAL.Mappers
             return new Account()
             {
                 Id = accountDTO.Id,
-                AccountOwnerId = accountDTO.Id,
+                AccountOwnerId = accountDTO.Owner.Id,
                 AccountTypeId = accountDTO.AccountTypeId,
                 Number = accountDTO.Number,
                 Balance = accountDTO.Balance,
                 BonusPoints = accountDTO.BonusPoints,
-                IsOponed = accountDTO.IsOponed
-                //TODO Owner
+                IsOponed = accountDTO.IsOponed, 
             };
         }
     }

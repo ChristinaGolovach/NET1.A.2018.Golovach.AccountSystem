@@ -18,7 +18,8 @@ namespace BLL.Mappers
                 FirstName = owner.FirstName,
                 LastName = owner.LastName,
                 PassportNumber = owner.PassportNumber,
-                Email = owner.Email
+                Email = owner.Email,
+                Id = owner.Id                
             };
         }
 
@@ -26,6 +27,7 @@ namespace BLL.Mappers
         public static Owner ToOwner(this OwnerDTO ownerDTO)
         {
             Owner owner = new Owner(ownerDTO.PassportNumber, ownerDTO.FirstName, ownerDTO.LastName, ownerDTO.Email);
+            owner.Id = ownerDTO.Id;
             return owner;
         }
     }

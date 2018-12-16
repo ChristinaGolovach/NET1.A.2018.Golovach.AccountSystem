@@ -90,37 +90,85 @@ namespace BLL.ServiceImplementation
 
             //TODO TRY - CATCH
             account.CloseAccount();
-        }
-
-        public void Deposit(string accountNumber, decimal amount)
-        {
-            Account account = GetAccountForOperation(accountNumber);
-
-            ExecuteAccountOperation(amount, account.Deposit);
 
             accountRepository.Update(account.ToAccauntDTO());
         }
 
+        public void Deposit(string accountNumber, decimal amount)
+        {
+            //Account account = GetAccountForOperation(accountNumber);
+
+            //ExecuteAccountOperation(account, amount, account.Deposit);
+
+            Account account = DepositCore(accountNumber, amount);
+
+            accountRepository.Update(account.ToAccauntDTO());
+
+            unitOfWork.Commit();
+        }
+
         public void Withdraw(string accountNumber, decimal amount)
+        {
+            //Account account = GetAccountForOperation(accountNumber);
+
+            //ExecuteAccountOperation(account, amount, account.Withdraw);
+
+            Account account =  WithdrawCore(accountNumber, amount);
+
+            //Вынесті в отдель метод
+            accountRepository.Update(account.ToAccauntDTO());
+
+            unitOfWork.Commit();
+
+        }
+
+        public void Transfer(string fromAccountNumber, string toAccountNumber, decimal amount)
+        {
+            // 1ый вариант не доконца
+            //Две операции нераздельно нужно выполнить
+            //  Withdraw(fromAccountNumber, amount);
+            //  Deposit(toAccountNumber, amount);
+
+            // 2ой варіант не доконца
+            //Account accountFrom = GetAccountForOperation(fromAccountNumber);
+            //Account accountTo = GetAccountForOperation(toAccountNumber);
+            //var operations = new Action<decimal>[] { accountFrom.Withdraw, accountTo.Deposit };
+
+            //3 вариант 
+            Account accountFrom = WithdrawCore(fromAccountNumber, amount);
+            Account accountTo = DepositCore(toAccountNumber, amount);
+
+            accountRepository.Update(accountFrom.ToAccauntDTO());
+            accountRepository.Update(accountTo.ToAccauntDTO());
+
+            unitOfWork.Commit();
+        }
+
+        private Account WithdrawCore(string accountNumber, decimal amount)
         {
             Account account = GetAccountForOperation(accountNumber);
 
             ExecuteAccountOperation(amount, account.Withdraw);
 
-            accountRepository.Update(account.ToAccauntDTO());
+            return account;
         }
 
-        public void Transfer(string fromAccountNumber, string toAccountNumber, decimal amount)
+        private Account DepositCore(string accountNumber, decimal amount)
         {
-            //Две операции нераздельно нужно выполнить
-            Withdraw(fromAccountNumber, amount);
+            Account account = GetAccountForOperation(accountNumber);
 
-            Deposit(toAccountNumber, amount);
+            ExecuteAccountOperation(amount, account.Deposit);
+
+            return account;
         }
 
         private void ExecuteAccountOperation(decimal amount, Action<decimal> operation)
         {
             operation(amount);
+    
+            //accountRepository.Update(account.ToAccauntDTO());
+
+            //unitOfWork.Commit();
         }
 
         private Account GetAccountForOperation(string accountNumber)

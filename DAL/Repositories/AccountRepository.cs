@@ -23,7 +23,7 @@ namespace DAL.Repositories
 
         public void Add(AccountDTO account)
         {
-            dbContext.Set<Account>().Add(account.ToAccountORM());
+             dbContext.Set<Account>().Add(account.ToAccountORM());
         }
 
         public IEnumerable<AccountDTO> GetAll()
@@ -45,7 +45,11 @@ namespace DAL.Repositories
 
         public void Update(AccountDTO account)
         {
-            throw new NotImplementedException();
+            Account accountForUpdate = dbContext.Set<Account>().Find(account.Id);
+
+            accountForUpdate.Balance = account.Balance;
+            accountForUpdate.BonusPoints = account.BonusPoints;
+            accountForUpdate.IsOponed = account.IsOponed;
         }
 
         IEnumerable<AccountDTO> IRepository<AccountDTO>.GetByPredicate(Expression<Func<AccountDTO, bool>> predicate)

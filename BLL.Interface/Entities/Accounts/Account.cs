@@ -10,6 +10,7 @@ namespace BLL.Interface.Entities.Accounts
     //TODO make internal (friendly assembly)
     public abstract class Account
     {
+        private int id;
         private string number;
         private decimal balance;
         private int bonusPoints;
@@ -19,6 +20,11 @@ namespace BLL.Interface.Entities.Accounts
         public event EventHandler<AccauntEventArgs> Operation = delegate { };
 
         #region property
+        public int Id
+        {
+            get => id;
+            set => id = value;
+        }
 
         public string Number
         {

@@ -21,5 +21,17 @@ namespace DAL.Mappers
                 Email = ownerOrm.Email
             };
         }
+
+        public static AccountOwner ToOwnerORM(this OwnerDTO ownerDto)
+        {
+            return new AccountOwner()
+            {
+                Id = ownerDto.Id,
+                FirstName = ownerDto.FirstName,
+                LastName = ownerDto.LastName,
+                PassportNumber = ownerDto.PassportNumber,
+                Email = ownerDto.Email
+            };
+        }
     }
 }

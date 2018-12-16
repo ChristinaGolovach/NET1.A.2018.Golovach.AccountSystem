@@ -23,7 +23,7 @@ namespace DAL.Repositories
 
         public void Add(OwnerDTO owner)
         {
-            throw new NotImplementedException();
+            dbContext.Set<AccountOwner>().Add(owner.ToOwnerORM());
         }
 
         public IEnumerable<OwnerDTO> GetAll()

@@ -11,7 +11,7 @@ namespace BLL.Interface.Entities.Owners
     {
         //TODO добавить валидацию
       //  private List<Account> accounts;
-
+        public int Id { get; set; } 
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PassportNumber { get; set; }

@@ -9,7 +9,7 @@ namespace BLL.Interface.Entities.Accounts
         // но если их требуется изменить ?????
         private const decimal BALANSECOST = 0.1M;
         private const decimal AMAUNTCOST = 0.1M;
-        private const decimal ALLOWEDBALANCEMINUS = -100M;
+        private const decimal ALLOWEDBALANCEMINUS = 0M;//-100M;
 
         public override AccountType AccountType => AccountType.BASE;
 
