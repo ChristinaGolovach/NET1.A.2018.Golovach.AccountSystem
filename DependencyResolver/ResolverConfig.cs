@@ -8,39 +8,46 @@ using DAL.Repositories;
 using ORMDBFirst;
 using DAL;
 using Ninject;
+using Ninject.Web.Common;
 
 
 namespace DependencyResolver
 {
     public static class ResolverConfig
     {
-        //public static void ConfigurateResolver(this IKernel kernel)
-        //{
-        //    kernel.Bind<IAccountService>().To<AccountService>();
-        //    //kernel.Bind<IRepository>().To<FakeRepository>();
-        //    kernel.Bind<IRepository>().To<AccountBinaryRepository>().WithConstructorArgument("test.bin");
-        //    kernel.Bind<IAccountNumberCreateService>().To<AccountNumberCreator>().InSingletonScope();
-        //    //kernel.Bind<IApplicationSettings>().To<ApplicationSettings>();
-        //}
+        public static void ConfigurateResolverConsole(this IKernel kernel)
+        {
+            ConfigurateResolver(kernel, false);
+        }
 
-        public static void ConfigurateResolver(this IKernel kernel)
+        public static void ConfigurateResolverWeb(this IKernel kernel)
+        {
+            ConfigurateResolver(kernel, true);
+        }
+
+        private static void ConfigurateResolver(IKernel kernel, bool isWeb)
         {
             kernel.Bind<IAccountService>().To<AccountService>();
             kernel.Bind<IOwnerService>().To<OwnerService>();
-
-            kernel.Bind<INumberGenerator<string>>().To<AccountNumberGenerator>().InSingletonScope();
-
-            //kernel.Bind<IAccountRepository>().To<AccountFakeRepository>();
-            //kernel.Bind<IOwnerRepository>().To<OwnerFakeRepository>();
-
             kernel.Bind<IAccountRepository>().To<AccountRepository>();
             kernel.Bind<IOwnerRepository>().To<OwnerRepository>();
-            kernel.Bind<IUnitOfWork>().To<UnitOfWork>();
+            kernel.Bind<INumberGenerator<string>>().To<AccountNumberGenerator>().InSingletonScope();
 
-            //for mvs in InRequestScope()
-            kernel.Bind<DbContext>().To<AccountSystemEntities>().InSingletonScope();
-            
+            if (isWeb)
+            {
+                kernel.Bind<IUnitOfWork>().To<UnitOfWork>().InRequestScope();
+                kernel.Bind<DbContext>().To<AccountSystemEntities>().InRequestScope();
+            }
+            else
+            {
+                kernel.Bind<IUnitOfWork>().To<UnitOfWork>().InSingletonScope();
+                kernel.Bind<DbContext>().To<AccountSystemEntities>().InSingletonScope();
+            }
+
+            //kernel.Bind<IAccountRepository>().To<AccountFakeRepository>();
+            //kernel.Bind<IOwnerRepository>().To<OwnerFakeRepository>();            
         }
+
 
         //TODO Later fo DBContext
 

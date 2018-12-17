@@ -15,7 +15,7 @@ namespace ConsolePL
         static void Main(string[] args)
         {
             IKernel resolver = new StandardKernel();
-            resolver.ConfigurateResolver();
+            resolver.ConfigurateResolverConsole();
 
             INumberGenerator<string> numberGenerator = resolver.Get<INumberGenerator<string>>();
             IAccountService accountService = resolver.Get<IAccountService>();
@@ -97,15 +97,8 @@ namespace ConsolePL
 
             #endregion Real Dal
 
-            Console.ReadKey();
-            
+            Console.ReadKey();            
         }
-
-
-
-
-
-
 
         //private static readonly IKernel resolver;
 
