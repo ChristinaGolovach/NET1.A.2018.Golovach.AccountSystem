@@ -31,30 +31,30 @@ namespace DAL.Repositories
             return dbContext.Set<Account>().Include(account => account.AccountOwner).AsEnumerable().Select(a => a.ToAccountDTO());
         }
 
-        //TODO Find  - for key
+        public AccountDTO Get(int id)
+        {
+            return dbContext.Set<Account>().Find(id)?.ToAccountDTO();
+        }
 
         public AccountDTO GetByNumber(string number)
         {
             return dbContext.Set<Account>().FirstOrDefault(account => account.Number == number)?.ToAccountDTO();
         }
 
-        public AccountDTO GetByPredicate(Expression<Func<AccountDTO, bool>> predicate)
+        public IEnumerable<AccountDTO> GetByPredicate(Expression<Func<AccountDTO, bool>> predicate)
         {
+            //TODO ExpressionVisitor
             throw new NotImplementedException();
         }
 
         public void Update(AccountDTO account)
         {
+            //TODO if null
             Account accountForUpdate = dbContext.Set<Account>().Find(account.Id);
 
             accountForUpdate.Balance = account.Balance;
             accountForUpdate.BonusPoints = account.BonusPoints;
             accountForUpdate.IsOponed = account.IsOponed;
-        }
-
-        IEnumerable<AccountDTO> IRepository<AccountDTO>.GetByPredicate(Expression<Func<AccountDTO, bool>> predicate)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -49,5 +49,10 @@ namespace DAL.Fake.Repositories
             IEnumerable <AccountDTO> matchedAccounts = accounts.Where(compiled).ToList();
             return matchedAccounts;
         }
+
+        public AccountDTO Get(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

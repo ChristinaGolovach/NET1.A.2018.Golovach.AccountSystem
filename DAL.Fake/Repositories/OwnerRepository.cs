@@ -61,5 +61,10 @@ namespace DAL.Fake.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public OwnerDTO Get(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

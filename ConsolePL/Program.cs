@@ -68,32 +68,32 @@ namespace ConsolePL
             #endregion Owner2
 
             #region Real DAL
-            //var accounts = accountService.GetAllAccounts();
-            //foreach (var account in accounts)
-            //{
-            //    Console.WriteLine($"{account.Owner.FirstName} - {account.Number} , Type - {account.AccountType} - Balance - {account.Balance}");
-            //}
+            var accounts = accountService.GetAllAccounts();
+            foreach (var account in accounts)
+            {
+                Console.WriteLine($"{account.Owner.FirstName} - {account.Number} , Type - {account.AccountType} - Balance - {account.Balance}");
+            }
 
-            //var owners = ownerService.GetAllOwners();
-            //foreach (var owner in owners)
-            //{
-            //    Console.WriteLine($"{owner.FirstName} - {owner.LastName} - {owner.PassportNumber}");
-            //}
+            var owners = ownerService.GetAllOwners();
+            foreach (var owner in owners)
+            {
+                Console.WriteLine($"{owner.FirstName} - {owner.LastName} - {owner.PassportNumber}");
+            }
 
-            ////Number 1TKAH2
-            //var accountByNumber = accountService.GetAccount("1TKAH2");
-            //var acountOwner = accountByNumber.Owner;
+            //Number 1TKAH2
+            var accountByNumber = accountService.GetAccount("1TKAH2");
+            var acountOwner = accountByNumber.Owner;
 
-            ////accountService.Deposit("TO4ETB55AA", 2);
-            accountService.Transfer("1TKAH2", "TO4ETB55AA", 190);
+            //accountService.Deposit("TO4ETB55AA", 2);
+
+            accountService.Transfer( "TO4ETB55AA", "1TKAH2", 190);
             
              var depositedAccount = accountService.GetAccount("TO4ETB55AA");
 
             Console.WriteLine($"{depositedAccount.Number} - balance - {depositedAccount.Balance}");
 
-            //accountService.OpenAccount(AccountType.PLATINUM, "KB1111111", 14);
-
-            // accountService.OpenAccount(AccountType.SILVER, "KB1111111", "User1", "User1", "email@test", 1111);
+            accountService.OpenAccount(AccountType.PLATINUM, "KB1111111", 14);
+            accountService.OpenAccount(AccountType.SILVER, "KB1111111", "User1", "User1", "email@test", 1111);
 
             #endregion Real Dal
 

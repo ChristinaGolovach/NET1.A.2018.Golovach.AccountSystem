@@ -96,45 +96,20 @@ namespace BLL.ServiceImplementation
 
         public void Deposit(string accountNumber, decimal amount)
         {
-            //Account account = GetAccountForOperation(accountNumber);
-
-            //ExecuteAccountOperation(account, amount, account.Deposit);
-
             Account account = DepositCore(accountNumber, amount);
 
-            accountRepository.Update(account.ToAccauntDTO());
-
-            unitOfWork.Commit();
+            SaveChangesAfterOperation(account);
         }
 
         public void Withdraw(string accountNumber, decimal amount)
         {
-            //Account account = GetAccountForOperation(accountNumber);
-
-            //ExecuteAccountOperation(account, amount, account.Withdraw);
-
             Account account =  WithdrawCore(accountNumber, amount);
 
-            //Вынесті в отдель метод
-            accountRepository.Update(account.ToAccauntDTO());
-
-            unitOfWork.Commit();
-
+            SaveChangesAfterOperation(account);
         }
 
         public void Transfer(string fromAccountNumber, string toAccountNumber, decimal amount)
         {
-            // 1ый вариант не доконца
-            //Две операции нераздельно нужно выполнить
-            //  Withdraw(fromAccountNumber, amount);
-            //  Deposit(toAccountNumber, amount);
-
-            // 2ой варіант не доконца
-            //Account accountFrom = GetAccountForOperation(fromAccountNumber);
-            //Account accountTo = GetAccountForOperation(toAccountNumber);
-            //var operations = new Action<decimal>[] { accountFrom.Withdraw, accountTo.Deposit };
-
-            //3 вариант 
             Account accountFrom = WithdrawCore(fromAccountNumber, amount);
             Account accountTo = DepositCore(toAccountNumber, amount);
 
@@ -171,6 +146,13 @@ namespace BLL.ServiceImplementation
             //unitOfWork.Commit();
         }
 
+        private void SaveChangesAfterOperation(Account account)
+        {
+            accountRepository.Update(account.ToAccauntDTO());
+
+            unitOfWork.Commit();
+        }
+
         private Account GetAccountForOperation(string accountNumber)
         {
             Account account = accountRepository.GetByNumber(accountNumber)?.ToAccount();
@@ -197,8 +179,6 @@ namespace BLL.ServiceImplementation
             string accountNumber = ReciveAccountNumber();
 
             Account account = accountCreator.CreateAccount(accountNumber, owner, initialBalance);            
-
-           // ownerService.OpenNewAccount(owner, account);
 
             accountRepository.Add(account.ToAccauntDTO());
 

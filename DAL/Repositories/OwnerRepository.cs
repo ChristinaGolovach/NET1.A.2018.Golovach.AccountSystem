@@ -26,25 +26,34 @@ namespace DAL.Repositories
             dbContext.Set<AccountOwner>().Add(owner.ToOwnerORM());
         }
 
-        public IEnumerable<OwnerDTO> GetAll()
+        public OwnerDTO Get(int id)
         {
-            return dbContext.Set<AccountOwner>().AsEnumerable().Select(a => a.ToOwnerDTO());
-        }
+             return dbContext.Set<AccountOwner>().Find(id)?.ToOwnerDTO();
+        } 
+
+        public IEnumerable<OwnerDTO> GetAll() => dbContext.Set<AccountOwner>().AsEnumerable().Select(a => a.ToOwnerDTO());
 
         //TODO Delete this method. due to the fact I have GetByPredicate
         public OwnerDTO GetByPassportNumber(string passportNumber)
         {
-            return dbContext.Set<AccountOwner>().FirstOrDefault(owner => owner.PassportNumber == passportNumber).ToOwnerDTO();
+            return dbContext.Set<AccountOwner>().FirstOrDefault(owner => owner.PassportNumber == passportNumber)?.ToOwnerDTO();
         }
 
         public IEnumerable<OwnerDTO> GetByPredicate(Expression<Func<OwnerDTO, bool>> predicate)
         {
+            //TODO ExpressionVisitor
             throw new NotImplementedException();
         }
 
         public void Update(OwnerDTO owner)
         {
-            throw new NotImplementedException();
+            //TODO if null
+            AccountOwner ownerForUpdate = dbContext.Set<AccountOwner>().Find(owner.Id);
+
+            ownerForUpdate.FirstName = owner.FirstName;
+            ownerForUpdate.LastName = owner.LastName;
+            ownerForUpdate.PassportNumber = owner.PassportNumber;
+            ownerForUpdate.Email = owner.Email;
         }
     }
 }

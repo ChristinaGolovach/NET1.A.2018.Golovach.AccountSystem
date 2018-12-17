@@ -11,7 +11,7 @@ namespace DAL.Interface.Interfaces
     {
         IEnumerable<TEntity> GetAll();
         IEnumerable<TEntity> GetByPredicate(Expression<Func<TEntity, bool>> predicate);
-        //T GetById(int id);
+        TEntity Get(int id);
         void Add(TEntity t);
         void Update(TEntity t);      
         //TODO Transaction

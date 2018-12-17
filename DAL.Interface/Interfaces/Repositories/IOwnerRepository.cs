@@ -9,6 +9,7 @@ namespace DAL.Interface.Interfaces
 {
     public interface IOwnerRepository : IRepository<OwnerDTO>
     {
+        //TODO хотя можно удалить. есть предикат
         OwnerDTO GetByPassportNumber(string passportNumber);
        // OwnerDTO GetByPassportNumber(string passportNumber, StringComparison stringComparison);
     }
