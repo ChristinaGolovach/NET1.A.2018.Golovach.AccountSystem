@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BLL.Interface.Entities.Owners;
+using BLL.Models.Owners;
 
-namespace BLL.Interface.Entities.Accounts
+namespace BLL.Models.Accounts
 {
-    //TODO make internal (friendly assembly)
+    //TODO add validation
     public abstract class Account
     {
         private int id;
@@ -101,7 +101,6 @@ namespace BLL.Interface.Entities.Accounts
 
             if (!IsAllowedToWithdraw(amount))
             {
-                // верное ли исключение??
                 GenerateEventInfo(nameof(Withdraw), "Not allowed.");
                 throw new InvalidOperationException();
             }

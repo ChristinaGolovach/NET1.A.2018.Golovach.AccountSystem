@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BLL.Interface.Interfaces
+﻿namespace BLL.Interface.Interfaces
 {
+    //TODO move in another project
     public interface INumberGenerator<out T>
     {
         T GenerateNumber(int numberLength = 10);

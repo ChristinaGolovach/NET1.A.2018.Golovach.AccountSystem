@@ -1,7 +1,27 @@
-﻿
+﻿@using MvcPL.ViewModels
+@model IEnumerable<AccountViewModel>
+
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Index from Account Controller</h2>
+<h2>All accounts</h2>
+
+@*<table class="table">
+    <tr>
+        <td>Number</td>
+        <td>Type</td>
+        <td>Balance</td>
+        <td>Bonus Points</td>
+    </tr>
+    @foreach(var account in Model)
+    {
+        <tr>
+            <td>@account.Number</td>
+            <td>@account.AccountTypeId</td>
+            <td>@account.Balance</td>
+            <td>@account.BonusPoints</td>
+        </tr>
+    }
+</table>*@
 

@@ -3,20 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BLL.Interface.Entities.Accounts;
 
-namespace BLL.Interface.Entities.Owners
+namespace BLL.Models.Owners
 {
     public class Owner
     {
-        //TODO добавить валидацию
-      //  private List<Account> accounts;
-        public int Id { get; set; } 
+        //TODO add validation
+        public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PassportNumber { get; set; }
         public string Email { get; set; }
-        //public IEnumerable<Account> Accounts { get => accounts; }
 
         public Owner(string passportNumber, string firstName, string lastName, string email)
         {
@@ -24,21 +21,7 @@ namespace BLL.Interface.Entities.Owners
             LastName = lastName;
             PassportNumber = passportNumber;
             Email = email;
-          //  accounts = new List<Account>();
         }
-
-        //public void OpenAccount(Account account)
-        //{
-        //    accounts.Add(account);
-        //}
-
-        //public void AttachAccounts(IEnumerable<Account> accounts)
-        //{
-        //    foreach(var account in accounts)
-        //    {
-        //        OpenAccount(account);
-        //    }
-        //}
 
         public bool Equals(Owner otherOwner)
         {
@@ -78,4 +61,3 @@ namespace BLL.Interface.Entities.Owners
         }
     }
 }
-

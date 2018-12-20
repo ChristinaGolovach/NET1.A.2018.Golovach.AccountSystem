@@ -7,6 +7,7 @@ using BLL.Interface.Interfaces;
 
 namespace BLL.ServiceImplementation
 {
+    //TODO move in another project
     public class AccountNumberGenerator : INumberGenerator<string>
     {
         private const string SYMBOLS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BLL.Interface.Entities.Accounts;
+using BLL.Interface.Entities;
 using BLL.Interface.Interfaces;
-using BLL.Interface.Entities.Owners;
 using BLL.Factories;
 using BLL.Mappers;
+using BLL.Models.Accounts;
 using DAL.Interface.Interfaces;
 
 
@@ -20,7 +20,7 @@ namespace BLL.ServiceImplementation
         private IAccountRepository accountRepository;
         private IUnitOfWork unitOfWork;
 
-        //TODO вынести INumberGenerator із конструктора 
+        //TODO move INumberGenerator from ctor
         public AccountService(IAccountRepository accountRepository, IOwnerService ownerService, IUnitOfWork unitOfWork, INumberGenerator<string> numberGenerator)
         {
             this.accountRepository = accountRepository;
@@ -28,54 +28,53 @@ namespace BLL.ServiceImplementation
             this.numberGenerator = numberGenerator;
             this.unitOfWork = unitOfWork;
         }
-
-        //TODO Ask? но тогда на уровне представления мы можем напрямую дtргать методы Account. Они ведь паблик.
-        public IEnumerable<Account> GetAllAccounts()
+        
+        public IEnumerable<AccountEntity> GetAllAccounts()
         {
-            return accountRepository.GetAll().Select(dto => dto.ToAccount());
+            return accountRepository.GetAll().Select(dto => dto.ToAccountEntity());
         }
 
-        public IEnumerable<Account> GetAllAccountsByOwnerPassport(string passportNumber)
+        public IEnumerable<AccountEntity> GetAllAccountsByOwnerPassport(string passportNumber)
         {
             var accounts = accountRepository.GetByPredicate(a => a.Owner.PassportNumber == passportNumber);
-            return accounts.Select(dto => dto.ToAccount());
+            return accounts.Select(dto => dto.ToAccountEntity());
         }
 
-        public Account GetAccount(string accountNumber)
+        public AccountEntity GetAccount(string accountNumber)
         {
-            return accountRepository.GetByNumber(accountNumber).ToAccount();
+            return accountRepository.GetByNumber(accountNumber).ToAccountEntity();
         }
 
-        public IEnumerable<Owner> GetAllOwners()
+        public IEnumerable<OwnerEntity> GetAllOwners()
         {
             return ownerService.GetAllOwners();
         }
         
-        public Owner GetOwner(string passportNumber)
+        public OwnerEntity GetOwner(string passportNumber)
         {
             return ownerService.FindByPassport(passportNumber);
         }
 
-        public string OpenAccount(AccountType accountType, string passportNumber, decimal initialBalance = 0)
+        public string OpenAccount(int idAccountType, string passportNumber, decimal initialBalance = 0)
         {
             // CheckInputData(accountCreator, passportNumber, initialBalance);
 
             //TODO Если такого пользователя не существует
-            Owner owner = ownerService.FindByPassport(passportNumber);
+            OwnerEntity owner = ownerService.FindByPassport(passportNumber);
             //TODO если такой фабрики нет
-            AccountFactory accountCreator = FactoryCollection.Factories.FirstOrDefault(f => f.AccountType == accountType);
+            AccountFactory accountCreator = FactoryCollection.Factories.FirstOrDefault(f => f.AccountType == idAccountType);
 
             return CreateAccount(accountCreator, owner, initialBalance);
         }
 
-        public string OpenAccount(AccountType accountType, string passportNumber, string firstName, string lastName, string email, decimal initialBalance = 0M)
+        public string OpenAccount(int idAccountType, string passportNumber, string firstName, string lastName, string email, decimal initialBalance = 0M)
         {
             //TODO
             //CheckInputData()
 
-            Owner owner = ownerService.CreateOwner(passportNumber, firstName, lastName, email);
+            OwnerEntity owner = ownerService.CreateOwner(passportNumber, firstName, lastName, email);
 
-            AccountFactory accountCreator = FactoryCollection.Factories.FirstOrDefault(f => f.AccountType == accountType);
+            AccountFactory accountCreator = FactoryCollection.Factories.FirstOrDefault(f => f.AccountType == idAccountType);
 
             return CreateAccount(accountCreator, owner, initialBalance);
         }
@@ -91,7 +90,7 @@ namespace BLL.ServiceImplementation
             //TODO TRY - CATCH
             account.CloseAccount();
 
-            accountRepository.Update(account.ToAccauntDTO());
+            accountRepository.Update(account.ToAcountDTO());
         }
 
         public void Deposit(string accountNumber, decimal amount)

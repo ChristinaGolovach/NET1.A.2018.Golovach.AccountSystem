@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -21,11 +21,11 @@ namespace MvcPL.Controllers
         {
             var accounts = accountService.GetAllAccounts();
 
-            //for chek only
-            foreach(var account in accounts)
+            foreach(var item in accounts)
             {
 
             }
+
             return View();
         }
 
