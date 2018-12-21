@@ -40,12 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Factories\AccountFactory.cs" />
-    <Compile Include="Factories\BaseAccountFactory.cs" />
-    <Compile Include="Factories\FactoryCollection.cs" />
-    <Compile Include="Factories\GoldenAccountFactory.cs" />
-    <Compile Include="Factories\PlatinumAccountFactory.cs" />
-    <Compile Include="Factories\SilverAccountFactory.cs" />
     <Compile Include="Mappers\AccountMapper.cs" />
     <Compile Include="Mappers\OwnerMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -57,6 +51,10 @@
     <ProjectReference Include="..\BLL.Interface\BLL.Interface.csproj">
       <Project>{1b2d5675-d8c7-4295-aa6c-a0d7b7b8909e}</Project>
       <Name>BLL.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BLL.Models\BLL.Models.csproj">
+      <Project>{53544360-6629-4626-bbe5-c03a3187f8c9}</Project>
+      <Name>BLL.Models</Name>
     </ProjectReference>
     <ProjectReference Include="..\DAL.Interface\DAL.Interface.csproj">
       <Project>{9501e6ea-aa42-46b3-b9aa-ee8aec8697c9}</Project>

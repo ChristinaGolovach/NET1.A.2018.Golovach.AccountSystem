@@ -29,8 +29,10 @@ namespace DependencyResolver
         {
             kernel.Bind<IAccountService>().To<AccountService>();
             kernel.Bind<IOwnerService>().To<OwnerService>();
+
             kernel.Bind<IAccountRepository>().To<AccountRepository>();
             kernel.Bind<IOwnerRepository>().To<OwnerRepository>();
+
             kernel.Bind<INumberGenerator<string>>().To<AccountNumberGenerator>().InSingletonScope();
 
             if (isWeb)

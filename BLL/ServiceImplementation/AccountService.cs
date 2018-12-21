@@ -5,14 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using BLL.Interface.Entities;
 using BLL.Interface.Interfaces;
-using BLL.Factories;
 using BLL.Mappers;
 using BLL.Models.Accounts;
+using BLL.Models.Owners;
+using BLL.Models.Factories;
 using DAL.Interface.Interfaces;
 
 
 namespace BLL.ServiceImplementation
 {
+    //TODO validation, TRY - CATCH, Logger, move INumberGenerator from ctor
+
     public class AccountService : IAccountService
     {
         private IOwnerService ownerService;
@@ -20,7 +23,6 @@ namespace BLL.ServiceImplementation
         private IAccountRepository accountRepository;
         private IUnitOfWork unitOfWork;
 
-        //TODO move INumberGenerator from ctor
         public AccountService(IAccountRepository accountRepository, IOwnerService ownerService, IUnitOfWork unitOfWork, INumberGenerator<string> numberGenerator)
         {
             this.accountRepository = accountRepository;
@@ -36,6 +38,7 @@ namespace BLL.ServiceImplementation
 
         public IEnumerable<AccountEntity> GetAllAccountsByOwnerPassport(string passportNumber)
         {
+            //TODO I'm not implement expression visitor - will fall with real dal
             var accounts = accountRepository.GetByPredicate(a => a.Owner.PassportNumber == passportNumber);
             return accounts.Select(dto => dto.ToAccountEntity());
         }
@@ -57,40 +60,33 @@ namespace BLL.ServiceImplementation
 
         public string OpenAccount(int idAccountType, string passportNumber, decimal initialBalance = 0)
         {
-            // CheckInputData(accountCreator, passportNumber, initialBalance);
+            OwnerEntity ownerEntity = ownerService.FindByPassport(passportNumber);
 
-            //TODO Если такого пользователя не существует
-            OwnerEntity owner = ownerService.FindByPassport(passportNumber);
-            //TODO если такой фабрики нет
-            AccountFactory accountCreator = FactoryCollection.Factories.FirstOrDefault(f => f.AccountType == idAccountType);
+            AccountFactory accountCreator = FactoryCollection.Factories.FirstOrDefault(f => (int)f.AccountType == idAccountType);
 
-            return CreateAccount(accountCreator, owner, initialBalance);
+            return CreateAccount(accountCreator, ownerEntity.ToOwner(), initialBalance);
         }
 
         public string OpenAccount(int idAccountType, string passportNumber, string firstName, string lastName, string email, decimal initialBalance = 0M)
         {
-            //TODO
-            //CheckInputData()
+            OwnerEntity ownerEntity = ownerService.CreateOwner(passportNumber, firstName, lastName, email);
 
-            OwnerEntity owner = ownerService.CreateOwner(passportNumber, firstName, lastName, email);
+            AccountFactory accountCreator = FactoryCollection.Factories.FirstOrDefault(f => (int)f.AccountType == idAccountType);
 
-            AccountFactory accountCreator = FactoryCollection.Factories.FirstOrDefault(f => f.AccountType == idAccountType);
-
-            return CreateAccount(accountCreator, owner, initialBalance);
+            return CreateAccount(accountCreator, ownerEntity.ToOwner(), initialBalance);
         }
 
         public void CloseAccount(string accountNumber)
         {
-            //CheckInputData(numberAccount); 
-
             Account account = accountRepository.GetByNumber(accountNumber)?.ToAccount();
 
             account = account ?? throw new ArgumentException($"Account with number {accountNumber} does not exist.");
 
-            //TODO TRY - CATCH
             account.CloseAccount();
 
-            accountRepository.Update(account.ToAcountDTO());
+            accountRepository.Update(account.ToAccountDTO());
+
+            unitOfWork.Commit();
         }
 
         public void Deposit(string accountNumber, decimal amount)
@@ -112,8 +108,8 @@ namespace BLL.ServiceImplementation
             Account accountFrom = WithdrawCore(fromAccountNumber, amount);
             Account accountTo = DepositCore(toAccountNumber, amount);
 
-            accountRepository.Update(accountFrom.ToAccauntDTO());
-            accountRepository.Update(accountTo.ToAccauntDTO());
+            accountRepository.Update(accountFrom.ToAccountDTO());
+            accountRepository.Update(accountTo.ToAccountDTO());
 
             unitOfWork.Commit();
         }
@@ -147,7 +143,7 @@ namespace BLL.ServiceImplementation
 
         private void SaveChangesAfterOperation(Account account)
         {
-            accountRepository.Update(account.ToAccauntDTO());
+            accountRepository.Update(account.ToAccountDTO());
 
             unitOfWork.Commit();
         }
@@ -168,7 +164,7 @@ namespace BLL.ServiceImplementation
         {
             Account account = CreateAccountCore(accountCreator, owner, initialBalance);
 
-            account.Operation += CommitOperation;
+            account.Operation += LogOperation;
 
             return account.Number;
         }
@@ -177,9 +173,9 @@ namespace BLL.ServiceImplementation
         {
             string accountNumber = ReciveAccountNumber();
 
-            Account account = accountCreator.CreateAccount(accountNumber, owner, initialBalance);            
-
-            accountRepository.Add(account.ToAccauntDTO());
+            Account account = accountCreator.CreateAccount(accountNumber, owner, initialBalance);          
+            
+            accountRepository.Add(account.ToAccountDTO());
 
             unitOfWork.Commit();
 
@@ -187,7 +183,7 @@ namespace BLL.ServiceImplementation
         }
 
         //TODO
-        private void CommitOperation(object sender, AccauntEventArgs e)
+        private void LogOperation(object sender, AccauntEventArgs e)
         {
             //Logger
         }

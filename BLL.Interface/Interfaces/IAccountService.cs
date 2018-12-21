@@ -13,6 +13,7 @@ namespace BLL.Interface.Interfaces
         //Account GetAccount(int id);
 
         //TODO ById Owner
+        //TODO by accountType string (name) and in DB make const field for type
         string OpenAccount(int idAccountType, string passportNumber, decimal initialBalance = 0M);
         string OpenAccount(int idAccountType, string passportNumber, string firstName, string lastName, string email, decimal initialBalance = 0M);
 

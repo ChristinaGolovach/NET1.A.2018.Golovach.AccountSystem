@@ -7,7 +7,8 @@ using BLL.Models.Owners;
 
 namespace BLL.Models.Accounts
 {
-    //TODO add validation
+    //TODO add validation, chage access modifiers of property 
+
     public abstract class Account
     {
         private int id;

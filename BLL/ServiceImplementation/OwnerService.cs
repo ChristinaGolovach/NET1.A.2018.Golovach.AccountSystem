@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BLL.Interface.Interfaces;
-using BLL.Interface.Entities.Owners;
-using BLL.Interface.Entities.Accounts;
-using DAL.Interface.Interfaces;
+using BLL.Interface.Entities;
 using BLL.Mappers;
+using BLL.Models.Owners;
+using DAL.Interface.Interfaces;
+
 
 namespace BLL.ServiceImplementation
 {
@@ -20,9 +18,9 @@ namespace BLL.ServiceImplementation
             this.ownerRepository = ownerRepository;
         }
 
-        public Owner CreateOwner(string passportNumber, string firstName, string lastName, string email)
+        public OwnerEntity CreateOwner(string passportNumber, string firstName, string lastName, string email)
         {
-            Owner existingOwner = ownerRepository.GetByPassportNumber(passportNumber)?.ToOwner();
+            OwnerEntity existingOwner = ownerRepository.GetByPassportNumber(passportNumber)?.ToOwnerEntity();
 
             if (!ReferenceEquals(existingOwner, null))
             {
@@ -38,23 +36,17 @@ namespace BLL.ServiceImplementation
 
             ownerRepository.Add(owner.ToOwnerDTO());
 
-            return owner;
+            return owner.ToOwnerEntity();
         }
 
-        //public void OpenNewAccount(Owner owner, Account account)
-        //{            
-        //    owner.OpenAccount(account);
-        //}
-
-        public IEnumerable<Owner> GetAllOwners()
+        public IEnumerable<OwnerEntity> GetAllOwners()
         {
-            return ownerRepository.GetAll().ForEeach(dto => dto.ToOwner());
+            return ownerRepository.GetAll().ForEeach(dto => dto.ToOwnerEntity());
         }
 
-        public Owner FindByPassport(string passportNumber)
+        public OwnerEntity FindByPassport(string passportNumber)
         {
-            return ownerRepository.GetByPassportNumber(passportNumber)?.ToOwner();
+            return ownerRepository.GetByPassportNumber(passportNumber)?.ToOwnerEntity();
         }
-
     }
 }
