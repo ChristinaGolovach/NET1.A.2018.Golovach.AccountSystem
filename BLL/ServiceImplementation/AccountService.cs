@@ -58,22 +58,36 @@ namespace BLL.ServiceImplementation
             return ownerService.FindByPassport(passportNumber);
         }
 
-        public string OpenAccount(int idAccountType, string passportNumber, decimal initialBalance = 0)
+        public string OpenAccount(string accountType, string passportNumber, decimal initialBalance = 0)
         {
-            OwnerEntity ownerEntity = ownerService.FindByPassport(passportNumber);
+            AccountFactory accountCreator = FactoryCollection.Factories.FirstOrDefault(f => string.Compare(f.AccountType.ToString(), accountType, StringComparison.InvariantCultureIgnoreCase) == 0);
 
-            AccountFactory accountCreator = FactoryCollection.Factories.FirstOrDefault(f => (int)f.AccountType == idAccountType);
+            if (accountCreator == null)
+            {
+                throw new ArgumentException($"The {accountType} type of account does not support in this service.");
+            }
+            else
+            {
+                OwnerEntity ownerEntity = ownerService.FindByPassport(passportNumber);
 
-            return CreateAccount(accountCreator, ownerEntity.ToOwner(), initialBalance);
+                return CreateAccount(accountCreator, ownerEntity.ToOwner(), initialBalance);
+            }            
         }
 
-        public string OpenAccount(int idAccountType, string passportNumber, string firstName, string lastName, string email, decimal initialBalance = 0M)
+        public string OpenAccount(string accountType, string passportNumber, string firstName, string lastName, string email, decimal initialBalance = 0M)
         {
-            OwnerEntity ownerEntity = ownerService.CreateOwner(passportNumber, firstName, lastName, email);
+            AccountFactory accountCreator = FactoryCollection.Factories.FirstOrDefault(f => string.Compare(f.AccountType.ToString(), accountType, StringComparison.InvariantCultureIgnoreCase) == 0);
 
-            AccountFactory accountCreator = FactoryCollection.Factories.FirstOrDefault(f => (int)f.AccountType == idAccountType);
+            if (accountCreator == null)
+            {
+                throw new ArgumentException($"The {accountType} type of account does not support in this service.");
+            }
+            else
+            {
+                OwnerEntity ownerEntity = ownerService.CreateOwner(passportNumber, firstName, lastName, email);
 
-            return CreateAccount(accountCreator, ownerEntity.ToOwner(), initialBalance);
+                return CreateAccount(accountCreator, ownerEntity.ToOwner(), initialBalance);
+            }
         }
 
         public void CloseAccount(string accountNumber)

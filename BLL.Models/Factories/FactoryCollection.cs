@@ -10,7 +10,13 @@ namespace BLL.Models.Factories
 
         static FactoryCollection()
         {
-            factories = new List<AccountFactory>() { new BaseAccountFactory(), new SilverAccountFactory(), new GoldenAccountFactory(), new PlatinumAccountFactory() };
+            factories = new List<AccountFactory>()
+            {
+                new BaseAccountFactory(),
+                new SilverAccountFactory(),
+                new GoldenAccountFactory(),
+                new PlatinumAccountFactory()
+            };
         }
     }
 }

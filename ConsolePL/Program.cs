@@ -69,7 +69,7 @@ namespace ConsolePL
             var accounts = accountService.GetAllAccounts();
             foreach (var account in accounts)
             {
-                Console.WriteLine($"{account.Owner.FirstName} - {account.Number} , Type - {account.AccountType} - Balance - {account.Balance}");
+                Console.WriteLine($"{account.Owner.FirstName} - {account.Number} , Type - {account.AccountType.Id} - Balance - {account.Balance}");
             }
 
             var owners = ownerService.GetAllOwners();
@@ -84,14 +84,14 @@ namespace ConsolePL
 
             //accountService.Deposit("TO4ETB55AA", 2);
 
-            accountService.Transfer( "TO4ETB55AA", "1TKAH2", 190);
+            accountService.Transfer("1TKAH2", "TO4ETB55AA",  190);
             
-             var depositedAccount = accountService.GetAccount("TO4ETB55AA");
+             var depositedAccount = accountService.GetAccount("1TKAH2");
 
             Console.WriteLine($"{depositedAccount.Number} - balance - {depositedAccount.Balance}");
 
-            accountService.OpenAccount(4, "KB1111111", 14);
-            accountService.OpenAccount(2, "KB1111111", "User1", "User1", "email@test", 1111);
+            accountService.OpenAccount("Platinum", "KB1111111", 14);
+            accountService.OpenAccount("Golden", "KB1111111", "User1", "User1", "email@test", 1111);
 
             #endregion Real Dal
 

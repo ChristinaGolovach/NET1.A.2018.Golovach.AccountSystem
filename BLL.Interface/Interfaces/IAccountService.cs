@@ -14,8 +14,8 @@ namespace BLL.Interface.Interfaces
 
         //TODO ById Owner
         //TODO by accountType string (name) and in DB make const field for type
-        string OpenAccount(int idAccountType, string passportNumber, decimal initialBalance = 0M);
-        string OpenAccount(int idAccountType, string passportNumber, string firstName, string lastName, string email, decimal initialBalance = 0M);
+        string OpenAccount(string accountType, string passportNumber, decimal initialBalance = 0M);
+        string OpenAccount(string accountType, string passportNumber, string firstName, string lastName, string email, decimal initialBalance = 0M);
 
         void CloseAccount(string accountNumber);
         //TODO By id
