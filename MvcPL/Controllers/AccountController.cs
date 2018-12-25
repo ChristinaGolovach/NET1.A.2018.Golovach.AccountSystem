@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using BLL.Interface.Interfaces;
+using MvcPL.Infrastructure.Mappers;
 
 namespace MvcPL.Controllers
 {
@@ -19,13 +20,15 @@ namespace MvcPL.Controllers
         // GET: Account
         public ActionResult Index()
         {
-            var accounts = accountService.GetAllAccounts();
+            var accounts = accountService.GetAllAccounts().Select(accountEntity => accountEntity.ToAccountVM());
 
-            foreach(var item in accounts)
-            {
+            return View(accounts);
+        }
 
-            }
-
+        [ActionName("Details")]
+        public ActionResult ShowDetails(int? id)
+        {
+            ViewBag.Id = id;
             return View();
         }
 
