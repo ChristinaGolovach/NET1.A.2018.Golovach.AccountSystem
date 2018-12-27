@@ -23,6 +23,17 @@ namespace MvcPL
             IKernel resolver = new StandardKernel();
             resolver.ConfigurateResolverWeb();
             System.Web.Mvc.DependencyResolver.SetResolver(new NinjectDependencyResolver(resolver));
+            
         }
+
+        protected void Application_Error()
+        {
+            Response.Redirect("Error/ApplicationError");
+            //TODO in logger
+            //var error = Server.GetLastError();
+            //Response.ContentType = "text/plain";
+            //Response.Write(error ?? (object)"unknown");
+            //Response.End();
+        } 
     }
 }

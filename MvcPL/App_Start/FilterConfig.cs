@@ -7,6 +7,7 @@ namespace MvcPL
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
+            //TODO in web config 
             filters.Add(new HandleErrorAttribute());
         }
     }

@@ -19,7 +19,7 @@
         <tr onclick="location.href = '@Url.Action("Details", "Account", new { Id = account.Id })'">
             <td>@account.Number</td>
             <td>@account.AccountTypeId</td>
-            <td>@account.Balance.ToString("c")</td>
+            <td>@account.Balance.ToString("c")</td>  
             <td>@account.BonusPoints</td>
         </tr>
     }

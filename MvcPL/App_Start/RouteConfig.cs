@@ -14,10 +14,20 @@ namespace MvcPL
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+            name: "Account",
+            url: "Account/{id}",
+            defaults: new { controller = "Account", action = "Details" });
+
+            routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
-            );
+                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional });
+
+            routes.MapRoute(
+                name: "404-catch-all",
+                url: "{*catchall}",
+                defaults: new { controller = "Error", action = "NotFound" });
+
         }
     }
 }
